@@ -50,25 +50,55 @@ window.renderStatistics = function (ctx, players, times) {
     return maxValue;
   };
 
-  // отрисовка гистограммы
+  // отрисовка гистограмм
   for (var i = 0; i < players.length; i++) {
-    var COLUMN_MAX_HEIGHT = getMaxValue(times);
-    var TIME = Math.round(times[i]);
-    var COLUMN_SHIFT_X = COLUMN_X + (COLUMN_WIDTH + COLUMN_STEP) * i;
-    var COLUMN_DYNAMIC_HEIGHT = TIME * COLUMN_HEIGHT / COLUMN_MAX_HEIGHT;
-    //var COLUMN_SHIFT_Y = COLUMN_Y + COLUMN_MAX_HEIGHT - COLUMN_DYNAMIC_HEIGHT;
 
-    this.drawText(ctx, '#6F7288', '', TIME, COLUMN_SHIFT_X, 70, 40);
-    this.drawRectangle(
-        ctx,
-        COLUMN_SHIFT_X,
-        //COLUMN_SHIFT_Y,
-        COLUMN_Y,
-        COLUMN_WIDTH,
-        COLUMN_DYNAMIC_HEIGHT,
-        COLUMN_RADIUS,
-        'rgba(255, 0, 0, 1)'
-    );
+    // определение максимальной высоты относительно time
+    var COLUMN_MAX_HEIGHT = getMaxValue(times);
+
+    // округление до ближайщего целого
+    var TIME = Math.round(times[i]);
+
+    //  распределение стобцов по ширине canvas относительно оси Х
+    var COLUMN_SHIFT_X = COLUMN_X + (COLUMN_WIDTH + COLUMN_STEP) * i;
+
+    // динамическое определение высоты столбца
+    var COLUMN_DYNAMIC_HEIGHT = TIME * COLUMN_HEIGHT / COLUMN_MAX_HEIGHT;
+
+    // выравнивание столбцов по оси Y
+    var COLUMN_SHIFT_Y = COLUMN_Y + COLUMN_HEIGHT - COLUMN_DYNAMIC_HEIGHT;
+
+    // динамическое позиционирование времени над столбцом
+    var TIME_SHIFT_Y = COLUMN_SHIFT_Y - 10;
+
+    // генератор случайного синего цвета
+    var COLORS = ['0e5ec5', '4c8de0', '4b709e', '1e4b6d', '0a3f67', 'a0b6e0', '64a2c7'];
+    var COLUMN_BACKGROUNG = '#' + COLORS[Math.floor(Math.random() * COLORS.length)];
+
+    this.drawText(ctx, '#6F7288', '', TIME, COLUMN_SHIFT_X, TIME_SHIFT_Y, 40);
+
+    if (players[i] === 'Вы') {
+      this.drawRectangle(
+          ctx,
+          COLUMN_SHIFT_X,
+          COLUMN_SHIFT_Y,
+          COLUMN_WIDTH,
+          COLUMN_DYNAMIC_HEIGHT,
+          COLUMN_RADIUS,
+          'rgba(255, 0, 0, 1)'
+      );
+    } else {
+      this.drawRectangle(
+          ctx,
+          COLUMN_SHIFT_X,
+          COLUMN_SHIFT_Y,
+          COLUMN_WIDTH,
+          COLUMN_DYNAMIC_HEIGHT,
+          COLUMN_RADIUS,
+          COLUMN_BACKGROUNG
+      );
+    }
+
     this.drawText(ctx, '', '', players[i], COLUMN_SHIFT_X, 270, 40);
   }
 };
