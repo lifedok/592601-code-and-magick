@@ -1,28 +1,27 @@
 'use strict';
 
+var drawRectangle = function (ctx, x, y, width, height, radius, color) {
+  ctx.fillStyle = color || '#000';
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+  ctx.fill();
+};
+var drawText = function (ctx, text, x, y, color, font) {
+  ctx.fillStyle = color || '#000';
+  ctx.font = font || '16px PT Mono';
+  ctx.fillText(text, x, y);
+};
+
 window.renderStatistics = function (ctx, players, times) {
-
-  var drawRectangle = function (x, y, width, height, radius, color) {
-    ctx.fillStyle = color ? color : '#000';
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
-    ctx.fill();
-  };
-  var drawText = function (color, font, text, x, y, maxWidth) {
-    ctx.fillStyle = color ? color : '#000';
-    ctx.font = font ? font : '16px PT Mono';
-    ctx.fillText(text, x, y, maxWidth);
-  };
-
   // constant's
   var RECTANGLE_X = 110;
   var RECTANGLE_Y = 10;
@@ -40,6 +39,7 @@ window.renderStatistics = function (ctx, players, times) {
 
   // отрисовка облачка с тенью
   drawRectangle(
+      ctx,
       RECTANGLE_X + SHIFT,
       RECTANGLE_Y + SHIFT,
       RECTANGLE_WIDTH,
@@ -48,6 +48,7 @@ window.renderStatistics = function (ctx, players, times) {
       'rgba(0, 0, 0, 0.7)'
   );
   drawRectangle(
+      ctx,
       RECTANGLE_X,
       RECTANGLE_Y,
       RECTANGLE_WIDTH,
@@ -57,8 +58,8 @@ window.renderStatistics = function (ctx, players, times) {
   );
 
   // отрисовка приветствия
-  drawText('#880844', '', 'Ура, вы победили!', 220, 30, 200);
-  drawText('', '', 'Список результатов:', 210, 50, 200);
+  drawText(ctx, 'Ура, вы победили!', 220, 30, '#880844');
+  drawText(ctx, 'Список результатов:', 210, 50);
 
   // высчитываем максимальное значение массива
   var getMaxValue = function (arr) {
@@ -92,34 +93,20 @@ window.renderStatistics = function (ctx, players, times) {
     // динамическое позиционирование времени над столбцом
     var TIME_SHIFT_Y = COLUMN_SHIFT_Y - 10;
 
-    // генератор случайного синего цвета
-    var COLORS = ['0e5ec5', '4c8de0', '4b709e', '1e4b6d', '0a3f67', 'a0b6e0', '64a2c7'];
-    var COLUMN_BACKGROUNG = '#' + COLORS[Math.floor(Math.random() * COLORS.length)];
+    drawText(ctx, TIME, COLUMN_SHIFT_X, TIME_SHIFT_Y, '#6F7288');
 
-    drawText('#6F7288', '', TIME, COLUMN_SHIFT_X, TIME_SHIFT_Y, 40);
+    drawRectangle(
+        ctx,
+        COLUMN_SHIFT_X,
+        COLUMN_SHIFT_Y,
+        COLUMN_WIDTH,
+        COLUMN_DYNAMIC_HEIGHT,
+        COLUMN_RADIUS,
+        (players[i] === 'Вы')
+          ? 'rgba(255, 0, 0, 1)'
+          : 'rgba(43, 126, 172, ' + Math.random().toFixed(2) + ')'
+    );
 
-    if (players[i] === 'Вы') {
-      drawRectangle(
-          COLUMN_SHIFT_X,
-          COLUMN_SHIFT_Y,
-          COLUMN_WIDTH,
-          COLUMN_DYNAMIC_HEIGHT,
-          COLUMN_RADIUS,
-          'rgba(255, 0, 0, 1)'
-      );
-    } else {
-      drawRectangle(
-          COLUMN_SHIFT_X,
-          COLUMN_SHIFT_Y,
-          COLUMN_WIDTH,
-          COLUMN_DYNAMIC_HEIGHT,
-          COLUMN_RADIUS,
-          COLUMN_BACKGROUNG
-      );
-    }
-
-    drawText('', '', players[i], COLUMN_SHIFT_X, 270, 40);
+    drawText(ctx, players[i], COLUMN_SHIFT_X, 270);
   }
 };
-
-
