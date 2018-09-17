@@ -112,25 +112,25 @@ var ENTER_KEYCODE = 13;
 var SETUP = WIZARDS_DIALOG;
 var SETUP_OPEN = document.querySelector('.setup-open');
 var SETUP_CLOSE = SETUP.querySelector('.setup-close');
-var clickedElement = null;
+
+// не смог понять, как сделать так,
+// чтобы по ENTER на input не закрывалось окно.
+// А закрывалось только по ENTER на крестик. Это актуально, когда не стоит action в form.
+// Из-за того, что сейчас в index.html в form.setup-wizard-form стоит action, то
+// по ENTER отправляет форму.
+// Если правильно понимаю, то только этот кейс до полной готовности остался.
 
 var onPopupEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     onClosePopup();
   }
 };
-var onOpenPopup = function (evt) {
-  clickedElement = evt.currentTarget;
-  if (clickedElement) {
-    SETUP.classList.remove('hidden');
-  }
+var onOpenPopup = function () {
+  SETUP.classList.remove('hidden');
   document.addEventListener('keydown', onPopupEscPress);
 };
-var onClosePopup = function (evt) {
-  clickedElement = evt.currentTarget;
-  if (clickedElement) {
-    SETUP.classList.add('hidden');
-  }
+var onClosePopup = function () {
+  SETUP.classList.add('hidden');
   document.removeEventListener('keydown', onPopupEscPress);
 };
 
@@ -145,8 +145,9 @@ SETUP_OPEN.addEventListener('keydown', function (evt) {
   }
 });
 SETUP_CLOSE.addEventListener('keydown', function (evt) {
-  evt.stopPropagation();
-  if (evt.keyCode === ENTER_KEYCODE) {
+  console.log('jkgh', !evt.target.classList.contains('setup-user-name'));
+  console.log('jkgh', evt.target.classList.contains('setup-close'));
+  if (evt.keyCode === ENTER_KEYCODE && !evt.target.classList.contains('.setup-user-name')) {
     onClosePopup();
   }
 });
