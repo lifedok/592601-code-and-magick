@@ -109,12 +109,12 @@ renderWizards();
 
 var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
-var SETUP = WIZARDS_DIALOG;
+var SETUP = document.querySelector('.setup');
 var SETUP_OPEN = document.querySelector('.setup-open');
 var SETUP_CLOSE = SETUP.querySelector('.setup-close');
 
 var onPopupEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
+  if (evt.keyCode === ESC_KEYCODE && evt.target.className !== 'setup-user-name') {
     onClosePopup();
   }
 };
