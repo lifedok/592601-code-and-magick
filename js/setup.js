@@ -47,7 +47,6 @@ var Wizard = {
 };
 
 
-var WIZARDS_DIALOG = document.querySelector('.setup');
 var SETUP_WIZARD_TEMPLATE = document.querySelector('#similar-wizard-template').content;
 var SETUP_SIMILAR_LIST = document.querySelector('.setup-similar-list');
 var SETUP_SIMILAR = document.querySelector('.setup-similar');
